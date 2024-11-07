@@ -1,4 +1,3 @@
-// src/calcIndicators.ts
 import { BollingerBands, EMA, MACD, RSI } from "technicalindicators";
 import { insertData } from "./database";
 
@@ -27,11 +26,9 @@ export function updateIndicators(price: number, timestamp: string) {
         SimpleMAOscillator: false,
         SimpleMASignal: false,
       }).slice(-1)[0] || {};
-
     const rsiValue =
       RSI.calculate({ period: 14, values: prices }).slice(-1)[0] || null;
 
-    // Safely retrieve Bollinger bands and check MACD and RSI for undefined/null values
     const bollinger_signal =
       price > (bollinger.upper || 0)
         ? 1
@@ -66,10 +63,11 @@ export function updateIndicators(price: number, timestamp: string) {
       macd_signal: macdValues.signal || null,
       rsi: rsiValue,
       bollinger_signal,
-      macd_histogram_signal, // Updated here
+      macd_histogram_signal,
       rsi_signal,
     };
 
-    insertData(data);
+    // Specify "solana_data" table name when inserting
+    insertData("solana_data", data);
   }
 }

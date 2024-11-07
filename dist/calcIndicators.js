@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateIndicators = updateIndicators;
-// src/calcIndicators.ts
 const technicalindicators_1 = require("technicalindicators");
 const database_1 = require("./database");
 const prices = [];
@@ -21,7 +20,6 @@ function updateIndicators(price, timestamp) {
             SimpleMASignal: false,
         }).slice(-1)[0] || {};
         const rsiValue = technicalindicators_1.RSI.calculate({ period: 14, values: prices }).slice(-1)[0] || null;
-        // Safely retrieve Bollinger bands and check MACD and RSI for undefined/null values
         const bollinger_signal = price > (bollinger.upper || 0)
             ? 1
             : price < (bollinger.lower || 0)
@@ -52,9 +50,10 @@ function updateIndicators(price, timestamp) {
             macd_signal: macdValues.signal || null,
             rsi: rsiValue,
             bollinger_signal,
-            macd_histogram_signal, // Updated here
+            macd_histogram_signal,
             rsi_signal,
         };
-        (0, database_1.insertData)(data);
+        // Specify "solana_data" table name when inserting
+        (0, database_1.insertData)("solana_data", data);
     }
 }
